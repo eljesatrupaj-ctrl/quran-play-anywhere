@@ -43,6 +43,64 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
     }
   }, [surahNumber, reciterId]);
 
+  // 🔔 Media Session — kontrollet në lock screen / notification (Android & iOS)
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: `${surah.englishName} · ${surah.name}`,
+      artist: reciter.name,
+      album: "Nūr al-Qurʾān · DS Interactive",
+      artwork: [
+        { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
+        { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      ],
+    });
+
+    const handlers: Array<[MediaSessionAction, () => void]> = [
+      ["play", () => audioRef.current?.play().then(() => setPlaying(true)).catch(() => {})],
+      ["pause", () => { audioRef.current?.pause(); setPlaying(false); }],
+      ["previoustrack", () => onPrev()],
+      ["nexttrack", () => onNext()],
+      ["seekbackward", () => {
+        if (audioRef.current) audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 10);
+      }],
+      ["seekforward", () => {
+        if (audioRef.current) audioRef.current.currentTime = Math.min(duration, audioRef.current.currentTime + 10);
+      }],
+    ];
+
+    handlers.forEach(([action, handler]) => {
+      try { navigator.mediaSession.setActionHandler(action, handler); } catch {}
+    });
+
+    return () => {
+      handlers.forEach(([action]) => {
+        try { navigator.mediaSession.setActionHandler(action, null); } catch {}
+      });
+    };
+  }, [surah, reciter, duration, onPrev, onNext]);
+
+  // Përditëso state e Media Session
+  useEffect(() => {
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+    }
+  }, [playing]);
+
+  // Përditëso pozicionin për scrubber-in në notification
+  useEffect(() => {
+    if ("mediaSession" in navigator && "setPositionState" in navigator.mediaSession && duration > 0) {
+      try {
+        navigator.mediaSession.setPositionState({
+          duration,
+          position: Math.min(progress, duration),
+          playbackRate: 1,
+        });
+      } catch {}
+    }
+  }, [progress, duration]);
+
   const togglePlay = async () => {
     const audio = audioRef.current;
     if (!audio) return;
