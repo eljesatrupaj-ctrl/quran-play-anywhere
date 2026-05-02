@@ -44,6 +44,9 @@ const Index = () => {
           <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mt-2">
             Dëgjo · Mediton · Shkarko
           </p>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-accent/80 mt-4">
+            Krijuar nga DS Interactive
+          </p>
         </div>
       </header>
 

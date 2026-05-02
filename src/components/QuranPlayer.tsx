@@ -96,6 +96,11 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
         }}
         onWaiting={() => setLoading(true)}
         onCanPlay={() => setLoading(false)}
+        onError={() => {
+          setLoading(false);
+          setPlaying(false);
+          toast.error(`Audio nuk u ngarkua për ${reciter.name}. Provoni një recitues tjetër.`);
+        }}
         preload="metadata"
       />
 
@@ -107,6 +112,9 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
         </p>
         <p className="text-xs text-accent mt-3 tracking-widest uppercase">
           {reciter.name}
+        </p>
+        <p className="text-[10px] text-muted-foreground mt-2 tracking-[0.2em] uppercase">
+          Krijuar nga DS Interactive
         </p>
       </div>
 

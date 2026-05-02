@@ -1,3 +1,5 @@
+import { RECITERS } from "@/data/reciters";
+
 export interface Surah {
   number: number;
   name: string; // Arabic
@@ -124,47 +126,8 @@ export const SURAHS: Surah[] = [
   { number: 114, name: "الناس", englishName: "An-Nas", englishNameTranslation: "Mankind", numberOfAyahs: 6, revelationType: "Meccan" },
 ];
 
-// Use alquran.cloud API for full surah audio (per-surah MP3)
-// Format: https://cdn.islamic.network/quran/audio-surah/128/{edition}/{surahNumber}.mp3
-// Edition examples: ar.alafasy, ar.abdurrahmaansudais, ar.husary etc.
-export const RECITER_EDITIONS: Record<string, string> = {
-  alafasy: "ar.alafasy",
-  sudais: "ar.abdurrahmaansudais",
-  shuraim: "ar.saoodshuraym",
-  husary: "ar.husary",
-  husary_mujawwad: "ar.husarymujawwad",
-  minshawi: "ar.minshawi",
-  minshawi_mujawwad: "ar.minshawimujawwad",
-  abdulbasit: "ar.abdulsamad",
-  abdulbasit_mujawwad: "ar.abdulbasitmurattal",
-  muaiqly: "ar.mahermuaiqly",
-  ajmi: "ar.ahmedajamy",
-  shaatree: "ar.shaatree",
-  hudhaify: "ar.hudhaify",
-  ayyoub: "ar.muhammadayyoub",
-  jibreel: "ar.muhammadjibreel",
-  rifai: "ar.hanirifai",
-  basfar: "ar.abdullahbasfar",
-  matrood: "ar.abdullahbasfar",
-  ghamdi: "ar.saoodshuraym",
-  akhdar: "ar.ibrahimakhbar",
-  tablawi: "ar.minshawimujawwad",
-  banna: "ar.minshawi",
-  qatami: "ar.mahermuaiqly",
-  yasser: "ar.mahermuaiqly",
-  hawashi: "ar.hudhaify",
-  juhany: "ar.abdullahbasfar",
-  tunaiji: "ar.husary",
-  soufi: "ar.abdurrahmaansudais",
-  hajjaj: "ar.alafasy",
-  sowaid: "ar.aymanswoaid",
-  parhizgar: "ar.parhizgar",
-  walk: "en.walk",
-};
-
 export function getSurahAudioUrl(reciterId: string, surahNumber: number): string {
-  const edition = RECITER_EDITIONS[reciterId] || "ar.alafasy";
+  const reciter = RECITERS.find((r) => r.id === reciterId) || RECITERS[0];
   const padded = String(surahNumber).padStart(3, "0");
-  // islamic.network CDN — full surah audio at 128kbps
-  return `https://cdn.islamic.network/quran/audio-surah/128/${edition}/${surahNumber}.mp3`;
+  return `${reciter.server}${padded}.mp3`;
 }
