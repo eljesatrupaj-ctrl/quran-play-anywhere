@@ -1,3 +1,5 @@
+import { RECITERS } from "@/data/reciters";
+
 export interface Surah {
   number: number;
   name: string; // Arabic
@@ -123,8 +125,6 @@ export const SURAHS: Surah[] = [
   { number: 113, name: "الفلق", englishName: "Al-Falaq", englishNameTranslation: "The Daybreak", numberOfAyahs: 5, revelationType: "Meccan" },
   { number: 114, name: "الناس", englishName: "An-Nas", englishNameTranslation: "Mankind", numberOfAyahs: 6, revelationType: "Meccan" },
 ];
-
-import { RECITERS } from "@/data/reciters";
 
 export function getSurahAudioUrl(reciterId: string, surahNumber: number): string {
   const reciter = RECITERS.find((r) => r.id === reciterId) || RECITERS[0];
