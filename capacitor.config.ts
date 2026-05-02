@@ -17,6 +17,10 @@ const config: CapacitorConfig = {
       backgroundColor: '#0a1f17',
       androidSplashResourceName: 'splash',
     },
+    AdMob: {
+      appId: 'ca-app-pub-3940256099942544~3347511713', // TEST App ID
+      initializeForTesting: true,
+    },
   },
 };
 
