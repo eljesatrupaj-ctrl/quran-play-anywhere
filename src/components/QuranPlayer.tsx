@@ -128,6 +128,7 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
     if ("mediaSession" in navigator) {
       navigator.mediaSession.playbackState = playing ? "playing" : "paused";
     }
+    updateMusicControls(playing);
   }, [playing]);
 
   // Përditëso pozicionin për scrubber-in në notification
@@ -142,6 +143,54 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
       } catch {}
     }
   }, [progress, duration]);
+
+  // 🎵 Native Music Controls (Android lock screen / notification)
+  useEffect(() => {
+    if (!isNative) return;
+    destroyMusicControls();
+    createMusicControls(`${surah.englishName} · ${surah.name}`, reciter.name, playing);
+
+    const handler = (action: any) => {
+      let message = action;
+      try {
+        message = typeof action === "string" ? JSON.parse(action).message : action.message;
+      } catch {}
+      switch (message) {
+        case "music-controls-play":
+          audioRef.current?.play().then(() => setPlaying(true)).catch(() => {});
+          break;
+        case "music-controls-pause":
+          audioRef.current?.pause();
+          setPlaying(false);
+          break;
+        case "music-controls-next":
+          onNext();
+          break;
+        case "music-controls-previous":
+          onPrev();
+          break;
+        case "music-controls-destroy":
+          audioRef.current?.pause();
+          setPlaying(false);
+          break;
+        case "music-controls-headset-unplugged":
+        case "music-controls-pause-event":
+          audioRef.current?.pause();
+          setPlaying(false);
+          break;
+        case "music-controls-play-event":
+          audioRef.current?.play().then(() => setPlaying(true)).catch(() => {});
+          break;
+      }
+    };
+
+    document.addEventListener("controlsNotification", handler as EventListener);
+    return () => {
+      document.removeEventListener("controlsNotification", handler as EventListener);
+      destroyMusicControls();
+    };
+  }, [surah, reciter, onNext, onPrev]);
+
 
   const togglePlay = async () => {
     const audio = audioRef.current;
