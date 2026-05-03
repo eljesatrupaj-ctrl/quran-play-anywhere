@@ -3,6 +3,7 @@ import { Search, BookOpen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SURAHS } from "@/data/surahs";
+import { useLang } from "@/i18n/LanguageContext";
 
 interface Props {
   selected: number;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export const SurahList = ({ selected, onSelect }: Props) => {
+  const { t } = useLang();
   const [q, setQ] = useState("");
 
   const filtered = useMemo(() => {
@@ -29,7 +31,7 @@ export const SurahList = ({ selected, onSelect }: Props) => {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Kërko Sure..."
+          placeholder={t.searchSurah}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           className="pl-10 bg-card/50 border-border rounded-2xl h-11 focus-visible:ring-accent"
@@ -69,7 +71,7 @@ export const SurahList = ({ selected, onSelect }: Props) => {
                   </p>
                   <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                     <BookOpen className="h-3 w-3" />
-                    {s.numberOfAyahs} ajete · {s.revelationType}
+                    {s.numberOfAyahs} {t.ayahs} · {s.revelationType === "Meccan" ? t.meccan : t.medinan}
                   </p>
                 </div>
                 <p className="font-arabic text-xl text-accent shrink-0">{s.name}</p>

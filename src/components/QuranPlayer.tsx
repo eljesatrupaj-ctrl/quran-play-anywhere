@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Capacitor } from "@capacitor/core";
 // @ts-ignore - plugin nuk ka tipe
 import { CapacitorMusicControls } from "capacitor-music-controls-plugin";
+import { useLang } from "@/i18n/LanguageContext";
 
 const isNative = Capacitor.isNativePlatform?.() ?? false;
 
@@ -63,6 +64,7 @@ const formatTime = (s: number) => {
 };
 
 export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerProps) => {
+  const { t } = useLang();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -80,9 +82,11 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
     setLoading(true);
     setProgress(0);
     audio.load();
-    if (playing) {
-      audio.play().catch(() => setPlaying(false));
-    }
+    // Always try to autoplay the newly-selected surah so playback continues seamlessly.
+    audio.play().then(() => setPlaying(true)).catch(() => {
+      // Autoplay may be blocked on first interaction in browsers; keep silent.
+      if (!playing) setPlaying(false);
+    });
   }, [surahNumber, reciterId]);
 
   // 🔔 Media Session — kontrollet në lock screen / notification (Android & iOS)
@@ -203,7 +207,7 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
         await audio.play();
         setPlaying(true);
       } catch {
-        toast.error("Nuk u luajt audio. Provoni përsëri.");
+        toast.error(t.playFailed);
       }
     }
   };
@@ -221,9 +225,9 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast.success(`U shkarkua: ${surah.englishName}`);
+      toast.success(`${t.downloaded}: ${surah.englishName}`);
     } catch {
-      toast.error("Shkarkimi dështoi.");
+      toast.error(t.downloadFailed);
     } finally {
       setDownloading(false);
     }
@@ -240,7 +244,7 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
         }}
         onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
         onEnded={() => {
-          setPlaying(false);
+          // Auto-play the next surah continuously
           onNext();
         }}
         onWaiting={() => setLoading(true)}
@@ -248,7 +252,7 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
         onError={() => {
           setLoading(false);
           setPlaying(false);
-          toast.error(`Audio nuk u ngarkua për ${reciter.name}. Provoni një recitues tjetër.`);
+          toast.error(`${t.audioFailed} (${reciter.name})`);
         }}
         preload="metadata"
       />
@@ -257,13 +261,13 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
         <p className="font-arabic text-5xl text-gradient-gold mb-2">{surah.name}</p>
         <h3 className="font-display text-2xl text-foreground">{surah.englishName}</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          {surah.englishNameTranslation} · {surah.numberOfAyahs} ajete
+          {surah.englishNameTranslation} · {surah.numberOfAyahs} {t.ayahs}
         </p>
         <p className="text-xs text-accent mt-3 tracking-widest uppercase">
           {reciter.name}
         </p>
         <p className="text-[10px] text-muted-foreground mt-2 tracking-[0.2em] uppercase">
-          Krijuar nga DS Interactive
+          {t.createdBy}
         </p>
       </div>
 
@@ -328,7 +332,7 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
           ) : (
             <Download className="h-4 w-4 mr-2" />
           )}
-          Shkarko Suren
+          {t.downloadSurah}
         </Button>
       </div>
     </div>
