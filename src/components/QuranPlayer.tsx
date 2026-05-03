@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Capacitor } from "@capacitor/core";
 // @ts-ignore - plugin nuk ka tipe
 import { CapacitorMusicControls } from "capacitor-music-controls-plugin";
+import { useLang } from "@/i18n/LanguageContext";
 
 const isNative = Capacitor.isNativePlatform?.() ?? false;
 
@@ -63,6 +64,7 @@ const formatTime = (s: number) => {
 };
 
 export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerProps) => {
+  const { t } = useLang();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -80,9 +82,11 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
     setLoading(true);
     setProgress(0);
     audio.load();
-    if (playing) {
-      audio.play().catch(() => setPlaying(false));
-    }
+    // Always try to autoplay the newly-selected surah so playback continues seamlessly.
+    audio.play().then(() => setPlaying(true)).catch(() => {
+      // Autoplay may be blocked on first interaction in browsers; keep silent.
+      if (!playing) setPlaying(false);
+    });
   }, [surahNumber, reciterId]);
 
   // 🔔 Media Session — kontrollet në lock screen / notification (Android & iOS)
