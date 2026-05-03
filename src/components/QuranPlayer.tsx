@@ -252,7 +252,7 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
         onError={() => {
           setLoading(false);
           setPlaying(false);
-          toast.error(`Audio nuk u ngarkua për ${reciter.name}. Provoni një recitues tjetër.`);
+          toast.error(`${t.audioFailed} (${reciter.name})`);
         }}
         preload="metadata"
       />
@@ -261,13 +261,13 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
         <p className="font-arabic text-5xl text-gradient-gold mb-2">{surah.name}</p>
         <h3 className="font-display text-2xl text-foreground">{surah.englishName}</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          {surah.englishNameTranslation} · {surah.numberOfAyahs} ajete
+          {surah.englishNameTranslation} · {surah.numberOfAyahs} {t.ayahs}
         </p>
         <p className="text-xs text-accent mt-3 tracking-widest uppercase">
           {reciter.name}
         </p>
         <p className="text-[10px] text-muted-foreground mt-2 tracking-[0.2em] uppercase">
-          Krijuar nga DS Interactive
+          {t.createdBy}
         </p>
       </div>
 
@@ -332,7 +332,7 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
           ) : (
             <Download className="h-4 w-4 mr-2" />
           )}
-          Shkarko Suren
+          {t.downloadSurah}
         </Button>
       </div>
     </div>
