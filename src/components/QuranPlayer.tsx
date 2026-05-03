@@ -5,6 +5,48 @@ import { Button } from "@/components/ui/button";
 import { SURAHS, getSurahAudioUrl } from "@/data/surahs";
 import { RECITERS } from "@/data/reciters";
 import { toast } from "sonner";
+import { Capacitor } from "@capacitor/core";
+// @ts-ignore - plugin nuk ka tipe
+import { CapacitorMusicControls } from "capacitor-music-controls-plugin";
+
+const isNative = Capacitor.isNativePlatform?.() ?? false;
+
+const destroyMusicControls = () => {
+  if (!isNative) return;
+  try { CapacitorMusicControls.destroy(); } catch {}
+};
+
+const createMusicControls = (title: string, artist: string, isPlaying: boolean) => {
+  if (!isNative) return;
+  try {
+    CapacitorMusicControls.create({
+      track: title,
+      artist,
+      album: "Nūr al-Qurʾān · DS Interactive",
+      cover: "ic_launcher",
+      isPlaying,
+      dismissable: false,
+      hasPrev: true,
+      hasNext: true,
+      hasClose: true,
+      hasScrubbing: false,
+      ticker: title,
+      playIcon: "media_play",
+      pauseIcon: "media_pause",
+      prevIcon: "media_prev",
+      nextIcon: "media_next",
+      closeIcon: "media_close",
+      notificationIcon: "notification",
+    });
+  } catch (e) {
+    console.error("MusicControls error", e);
+  }
+};
+
+const updateMusicControls = (isPlaying: boolean) => {
+  if (!isNative) return;
+  try { CapacitorMusicControls.updateIsPlaying({ isPlaying }); } catch {}
+};
 
 interface PlayerProps {
   surahNumber: number;
