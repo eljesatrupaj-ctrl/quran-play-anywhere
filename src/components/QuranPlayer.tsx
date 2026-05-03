@@ -207,7 +207,7 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
         await audio.play();
         setPlaying(true);
       } catch {
-        toast.error("Nuk u luajt audio. Provoni përsëri.");
+        toast.error(t.playFailed);
       }
     }
   };
@@ -225,9 +225,9 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast.success(`U shkarkua: ${surah.englishName}`);
+      toast.success(`${t.downloaded}: ${surah.englishName}`);
     } catch {
-      toast.error("Shkarkimi dështoi.");
+      toast.error(t.downloadFailed);
     } finally {
       setDownloading(false);
     }
