@@ -240,7 +240,7 @@ export const QuranPlayer = ({ surahNumber, reciterId, onPrev, onNext }: PlayerPr
         }}
         onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
         onEnded={() => {
-          setPlaying(false);
+          // Auto-play the next surah continuously
           onNext();
         }}
         onWaiting={() => setLoading(true)}
