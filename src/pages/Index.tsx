@@ -33,10 +33,13 @@ const Index = () => {
         />
         <div className="absolute inset-0 gradient-hero opacity-90" />
         <div className="relative max-w-5xl mx-auto px-6 py-10 text-center">
+          <div className="absolute right-4 top-4 md:right-6 md:top-6">
+            <LanguageSelector />
+          </div>
           <div className="inline-flex items-center gap-2 mb-3 px-4 py-1.5 rounded-full border border-accent/30 bg-card/30 backdrop-blur-sm">
             <Moon className="h-3.5 w-3.5 text-accent" />
             <span className="text-[10px] tracking-[0.3em] uppercase text-accent">
-              Bismillah
+              {t.bismillah}
             </span>
           </div>
           <h1 className="font-arabic text-6xl md:text-7xl text-gradient-gold mb-2 leading-tight">
@@ -46,10 +49,10 @@ const Index = () => {
             Nūr al-Qurʾān
           </p>
           <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mt-2">
-            Dëgjo · Mediton · Shkarko
+            {t.tagline}
           </p>
           <p className="text-[10px] tracking-[0.3em] uppercase text-accent/80 mt-4">
-            Krijuar nga DS Interactive
+            {t.createdBy}
           </p>
         </div>
       </header>
@@ -82,13 +85,13 @@ const Index = () => {
                   value="surahs"
                   className="rounded-lg data-[state=active]:gradient-gold data-[state=active]:text-accent-foreground font-display"
                 >
-                  Suret · 114
+                  {t.surahs} · {SURAHS.length}
                 </TabsTrigger>
                 <TabsTrigger
                   value="reciters"
                   className="rounded-lg data-[state=active]:gradient-gold data-[state=active]:text-accent-foreground font-display"
                 >
-                  Recitues · 32
+                  {t.reciters} · {RECITERS.length}
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="surahs" className="mt-0">
