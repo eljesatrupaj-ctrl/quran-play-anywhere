@@ -4,11 +4,15 @@ import { QuranPlayer } from "@/components/QuranPlayer";
 import { ReciterList } from "@/components/ReciterList";
 import { SurahList } from "@/components/SurahList";
 import { AdBanner } from "@/components/AdBanner";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SURAHS } from "@/data/surahs";
+import { RECITERS } from "@/data/reciters";
+import { useLang } from "@/i18n/LanguageContext";
 import heroPattern from "@/assets/hero-pattern.jpg";
 
 const Index = () => {
+  const { t } = useLang();
   const [surahNumber, setSurahNumber] = useState(1);
   const [reciterId, setReciterId] = useState("alafasy");
 
